@@ -82,8 +82,9 @@ public class TunerConstants {
     // Measured robot speed (m/s) at 12 V applied output;
     // This is NOT the desired max robot speed - see MaxSpeed in RobotContainer instead;
     // This needs to be tuned to your individual robot
-    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(1);
-
+    // Updated to 1/1 by BJB
+    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(1.1);
+    
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
     private static final double kCoupleRatio = 3.5714285714285716;
