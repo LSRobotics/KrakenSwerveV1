@@ -10,11 +10,17 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -34,9 +40,19 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
+    private final SendableChooser<Command> autoChooser; // bjb for pathplanner
+
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+  
+
+  
     public RobotContainer() {
+        
+        // I think the Autobuilder is somewhere in the pathplanner area
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auton Chooser", autoChooser);
+
         configureBindings();
     }
 
@@ -78,8 +94,12 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // Simple drive forward auton
-        final var idle = new SwerveRequest.Idle();
+
+        // Simple drive forward auton -- Commented out for the switch to pathplanner
+        // It looks like we now get the path from the auto chooser
+        // but the auto chooser is not defined here.  It is defined somewhere in pathplanner area. 
+
+        /*final var idle = new SwerveRequest.Idle();
         return Commands.sequence(
             // Reset our field centric heading to match the robot
             // facing away from our alliance station wall (0 deg).
@@ -93,6 +113,12 @@ public class RobotContainer {
             .withTimeout(5.0),
             // Finally idle for the rest of auton
             drivetrain.applyRequest(() -> idle)
-        );
+        );*/
+
+         return autoChooser.getSelected();
     }
+
+ 
+       
+
 }
