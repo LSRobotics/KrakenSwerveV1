@@ -43,16 +43,16 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
-
+    private final CommandXboxController m_OperatorXboxController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+    private final CommandXboxController m_driverCommandXboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+ 
     private final SendableChooser<Command> autoChooser; // bjb for pathplanner
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();  
 
     private final ShooterSubsystem m_shooter = new ShooterSubsystem();
  
-    private final CommandXboxController m_driverController =
-     new CommandXboxController(OperatorConstants.kDriverControllerPort);
+   
   
     public RobotContainer() {
         
@@ -69,16 +69,16 @@ public class RobotContainer {
 
       
         // Hold button X to spin the shooter; release to stop
-         m_driverController.x().whileTrue(m_shooter.spinCommand());
+         m_OperatorXboxController.x().whileTrue(m_shooter.spinCommand());
 
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-m_driverCommandXboxController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-m_driverCommandXboxController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-m_driverCommandXboxController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -89,20 +89,20 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        m_driverCommandXboxController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        m_driverCommandXboxController.b().whileTrue(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(-m_driverCommandXboxController.getLeftY(), -m_driverCommandXboxController.getLeftX()))
         ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        m_driverCommandXboxController.back().and(m_driverCommandXboxController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        m_driverCommandXboxController.back().and(m_driverCommandXboxController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        m_driverCommandXboxController.start().and(m_driverCommandXboxController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        m_driverCommandXboxController.start().and(m_driverCommandXboxController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // Reset the field-centric heading on left bumper press.
-        joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        m_driverCommandXboxController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
