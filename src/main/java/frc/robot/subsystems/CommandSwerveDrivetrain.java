@@ -140,6 +140,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+           configureAutoBuilder();
     }
 
     /**
@@ -164,6 +165,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
+        configureAutoBuilder();
     }
 
     /*  This code was given to me (bjb) by Ben Bell for setting up path planner. */
@@ -194,7 +197,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 return false;
                 },
                 this 
+
+
         );
+
+        System.out.println("AutoBuiteplderStepcheck");
 
         } catch (Exception e) {
             // Handle exception as needed
@@ -232,6 +239,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
+        
+           configureAutoBuilder();
     }
 
     /**

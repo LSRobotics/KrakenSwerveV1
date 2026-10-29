@@ -51,7 +51,6 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();  
 
     private final ShooterSubsystem m_shooter = new ShooterSubsystem();
- 
    
   
     public RobotContainer() {
@@ -59,8 +58,6 @@ public class RobotContainer {
         // I think the Autobuilder is somewhere in the pathplanner area
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auton Chooser", autoChooser);
-
-
 
         configureBindings();        
     }
