@@ -67,8 +67,8 @@ public class RobotContainer {
       
         // Hold button X to spin the shooter; release to stop
         // Hold button Y to spone the indexer: release to stop
-         m_OperatorXboxController.x().whileTrue(m_shooter.spinCommand());
-         m_OperatorXboxController.y().whileTrue(m_shooter.indexCommand());
+         m_OperatorXboxController.leftBumper().whileTrue(m_shooter.spinCommand());
+         m_OperatorXboxController.rightBumper().whileTrue(m_shooter.indexCommand());
 
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.

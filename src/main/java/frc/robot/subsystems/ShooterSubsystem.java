@@ -18,7 +18,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final SparkMax m_rightMotor =
       new SparkMax(ShooterConstants.kRightMotorId, MotorType.kBrushless);
   private final SparkMax m_indexMotor =
-      new SparkMax(ShooterConstants.kRightMotorId, MotorType.kBrushless);
+      new SparkMax(ShooterConstants.kIndexMotorId, MotorType.kBrushless);
  
   public ShooterSubsystem() {
     // Left motor: the "leader"
@@ -37,7 +37,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // Index motor: Don't know if it is inveresed on not.  We shall see when we test
     SparkMaxConfig indexConfig = new SparkMaxConfig();
-    rightConfig
+    indexConfig
         .idleMode(IdleMode.kCoast)
         .smartCurrentLimit(ShooterConstants.kCurrentLimitAmps)
         .inverted(true); 
@@ -56,24 +56,27 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   /** Sets shooter output as a percentage (-1.0 to 1.0). */
-  public void setIndexSpeed(double ispeed) {
-    m_indexMotor.set(ispeed); // right motor follows (inverted)
+  public void setIndexSpeed(double speed) {
+    m_indexMotor.set(speed); // 
   }
  
-   public void stop() {
+  public void stopShooter() {
     m_leftMotor.stopMotor();
+  }
+
+  public void stopIndexer() {
     m_indexMotor.stopMotor();
   }
  
   /** Spins the shooter while the command is scheduled, stops when it ends. */
   public Command spinCommand() {
-    return runEnd(() -> setSpeed(ShooterConstants.kShooterSpeed), this::stop)
+    return runEnd(() -> setSpeed(ShooterConstants.kShooterSpeed), this::stopShooter)
         .withName("ShooterSpin");
   }
 
     /** Spins the shooter while the command is scheduled, stops when it ends. */
   public Command indexCommand() {
-    return runEnd(() -> setSpeed(ShooterConstants.kIndexSpeed), this::stop)
+    return runEnd(() -> setIndexSpeed(ShooterConstants.kIndexSpeed), this::stopIndexer)
         .withName("IndexSpin");
   }
 }
