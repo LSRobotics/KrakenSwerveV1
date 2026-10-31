@@ -12,9 +12,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
  
 public class ShooterSubsystem extends SubsystemBase {
+
   private final SparkMax m_leftMotor =
       new SparkMax(ShooterConstants.kLeftMotorId, MotorType.kBrushless);
   private final SparkMax m_rightMotor =
+      new SparkMax(ShooterConstants.kRightMotorId, MotorType.kBrushless);
+  private final SparkMax m_indexMotor =
       new SparkMax(ShooterConstants.kRightMotorId, MotorType.kBrushless);
  
   public ShooterSubsystem() {
@@ -31,25 +34,46 @@ public class ShooterSubsystem extends SubsystemBase {
         .idleMode(IdleMode.kCoast)
         .smartCurrentLimit(ShooterConstants.kCurrentLimitAmps)
         .follow(m_leftMotor, true); // true = opposite direction of the leader
+
+    // Index motor: Don't know if it is inveresed on not.  We shall see when we test
+    SparkMaxConfig indexConfig = new SparkMaxConfig();
+    rightConfig
+        .idleMode(IdleMode.kCoast)
+        .smartCurrentLimit(ShooterConstants.kCurrentLimitAmps)
+        .inverted(true); 
  
     m_leftMotor.configure(
         leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_rightMotor.configure(
         rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_indexMotor.configure(
+        indexConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
  
   /** Sets shooter output as a percentage (-1.0 to 1.0). */
   public void setSpeed(double speed) {
     m_leftMotor.set(speed); // right motor follows (inverted)
   }
+
+  /** Sets shooter output as a percentage (-1.0 to 1.0). */
+  public void setIndexSpeed(double ispeed) {
+    m_indexMotor.set(ispeed); // right motor follows (inverted)
+  }
  
-  public void stop() {
+   public void stop() {
     m_leftMotor.stopMotor();
+    m_indexMotor.stopMotor();
   }
  
   /** Spins the shooter while the command is scheduled, stops when it ends. */
   public Command spinCommand() {
     return runEnd(() -> setSpeed(ShooterConstants.kShooterSpeed), this::stop)
         .withName("ShooterSpin");
+  }
+
+    /** Spins the shooter while the command is scheduled, stops when it ends. */
+  public Command indexCommand() {
+    return runEnd(() -> setSpeed(ShooterConstants.kIndexSpeed), this::stop)
+        .withName("IndexSpin");
   }
 }

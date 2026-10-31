@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
+//import com.pathplanner.lib.auto.NamedCommands;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
@@ -66,7 +66,9 @@ public class RobotContainer {
 
       
         // Hold button X to spin the shooter; release to stop
+        // Hold button Y to spone the indexer: release to stop
          m_OperatorXboxController.x().whileTrue(m_shooter.spinCommand());
+         m_OperatorXboxController.y().whileTrue(m_shooter.indexCommand());
 
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
@@ -102,9 +104,6 @@ public class RobotContainer {
         m_driverCommandXboxController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
-
-
-
 
     }
 
