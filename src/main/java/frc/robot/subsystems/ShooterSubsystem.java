@@ -10,6 +10,10 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+
+import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  
 public class ShooterSubsystem extends SubsystemBase {
 
@@ -19,7 +23,9 @@ public class ShooterSubsystem extends SubsystemBase {
       new SparkMax(ShooterConstants.kRightMotorId, MotorType.kBrushless);
   private final SparkMax m_indexMotor =
       new SparkMax(ShooterConstants.kIndexMotorId, MotorType.kBrushless);
- 
+
+  private final RelativeEncoder m_leftEncoder = m_leftMotor.getEncoder();
+   
   public ShooterSubsystem() {
     // Left motor: the "leader"
     SparkMaxConfig leftConfig = new SparkMaxConfig();
@@ -50,7 +56,8 @@ public class ShooterSubsystem extends SubsystemBase {
         indexConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
  
-  /** Sets shooter output as a percentage (-1.0 to 1.0). */
+
+    /** Sets shooter output as a percentage (-1.0 to 1.0). */
   public void setSpeed(double speed) {
     m_leftMotor.set(speed); // right motor follows (inverted)
   }
@@ -68,6 +75,22 @@ public class ShooterSubsystem extends SubsystemBase {
     m_indexMotor.stopMotor();
   }
  
+    /*--------------------------------------------------------------------- */
+    /*  Getting the RPM from the encoders so we can put it on the dashboard */
+    //
+    public double getShooterRPM() {
+      return m_leftEncoder.getVelocity();
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
+    }
+
+    /*---------------------------------------------------------------------- */
+
+
+
   /** Spins the shooter while the command is scheduled, stops when it ends. */
   public Command spinCommand() {
     return runEnd(() -> setSpeed(ShooterConstants.kShooterSpeed), this::stopShooter)
