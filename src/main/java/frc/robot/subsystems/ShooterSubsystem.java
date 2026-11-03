@@ -32,7 +32,7 @@ public class ShooterSubsystem extends SubsystemBase {
     leftConfig
         .idleMode(IdleMode.kCoast)
         .smartCurrentLimit(ShooterConstants.kCurrentLimitAmps)
-        .inverted(false);
+        .inverted(true);
  
     // Right motor: mirrored on the robot, so it follows the left and is inverted
     SparkMaxConfig rightConfig = new SparkMaxConfig();
