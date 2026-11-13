@@ -12,7 +12,7 @@ public final class Constants {
     public static final int kIndexMotorId = 26;
  
     // Open-loop percent output (-1.0 to 1.0). Tune this for your shooter.
-    public static final double kShooterSpeed = 0.8;
+    public static final double kShooterSpeed = 0.6;
     public static final double kIndexSpeed = 0.5;
  
     public static final int kCurrentLimitAmps = 40;

@@ -54,21 +54,28 @@ public class RobotContainer {
    
   
     public RobotContainer() {
-        
+
+               
         // I think the Autobuilder is somewhere in the pathplanner area
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auton Chooser", autoChooser);
 
-        configureBindings();        
+        configureBindings();     
+
+
     }
 
     private void configureBindings() {
 
       
-        // Hold button X to spin the shooter; release to stop
-        // Hold button Y to spone the indexer: release to stop
-         m_OperatorXboxController.leftBumper().whileTrue(m_shooter.spinCommand());
-         m_OperatorXboxController.rightBumper().whileTrue(m_shooter.indexCommand());
+        // Operator controls to control the shooter
+
+         m_OperatorXboxController.rightBumper().whileTrue(m_shooter.spinCommand());
+         m_OperatorXboxController.rightTrigger().onTrue(m_shooter.increaseSpeedCommand());
+         m_OperatorXboxController.leftTrigger().onTrue(m_shooter.decreaseSpeedCommand());
+
+        //m_OperatorXboxController.rightBumper().whileTrue(m_shooter.indexCommand());
+         
 
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.

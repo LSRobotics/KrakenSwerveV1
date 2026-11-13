@@ -77,29 +77,54 @@ public class ShooterSubsystem extends SubsystemBase {
  
     /*--------------------------------------------------------------------- */
     /*  Getting the RPM from the encoders so we can put it on the dashboard */
-    //
+    /*--------------------------------------------------------------------- */
     public double getShooterRPM() {
       return m_leftEncoder.getVelocity();
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
+        SmartDashboard.putNumber("Shooter 1 RPM", m_leftMotor.getAbsoluteEncoder().getVelocity());
+        SmartDashboard.putNumber("Shooter 2 RPM", m_rightMotor.getAbsoluteEncoder().getVelocity());
+        SmartDashboard.putNumber("Shooter Speed", m_shooterSpeed);
     }
 
     /*---------------------------------------------------------------------- */
+    /*     Spin up the shooter                                               */
+    /*---------------------------------------------------------------------- */
 
+    private double m_shooterSpeed = ShooterConstants.kShooterSpeed; // default
 
+    public void increaseSpeed() {
+        m_shooterSpeed = Math.min(1.0, m_shooterSpeed + 0.05);
+    }
 
-  /** Spins the shooter while the command is scheduled, stops when it ends. */
-  public Command spinCommand() {
-    return runEnd(() -> setSpeed(ShooterConstants.kShooterSpeed), this::stopShooter)
-        .withName("ShooterSpin");
-  }
+    public void decreaseSpeed() {
+        m_shooterSpeed = Math.max(0.0, m_shooterSpeed - 0.05);
+    }
+
+    public double getShooterSpeed() {
+        return m_shooterSpeed;
+    }
+
 
     /** Spins the shooter while the command is scheduled, stops when it ends. */
-  public Command indexCommand() {
-    return runEnd(() -> setIndexSpeed(ShooterConstants.kIndexSpeed), this::stopIndexer)
-        .withName("IndexSpin");
-  }
+    public Command spinCommand() {
+      return runEnd(() -> setSpeed(m_shooterSpeed), this::stopShooter)
+         .withName("ShooterSpin");
+    }
+
+    public Command increaseSpeedCommand() {
+       return runOnce(this::increaseSpeed);
+    }
+
+    public Command decreaseSpeedCommand() {
+        return runOnce(this::decreaseSpeed);
+    }
+
+    /** Spins the indexer while the command is scheduled, stops when it ends. */
+    public Command indexCommand() {
+      return runEnd(() -> setIndexSpeed(ShooterConstants.kIndexSpeed), this::stopIndexer)
+          .withName("IndexSpin");
+    }
 }
